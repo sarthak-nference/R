@@ -39,8 +39,10 @@ RUN apt-get update && \
     evince \
     && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /usr/local/bin
+COPY . /usr/local/bin/Ry
 # Configure and build R from source, specifying the installation directory
-RUN cd R && \
+RUN cd Ry && \
     ./configure --enable-R-shlib --with-pdfviewer=evince --with-browser=firefox && \
     make && \
     make install
@@ -48,7 +50,7 @@ RUN cd R && \
 # Clean up build dependencies and source code
 
 RUN cd .. && \
-    rm -rf R-4.4.1 && \
+    rm -rf Ry && \
     apt-get purge -y \
     build-essential \
     gfortran \
@@ -81,6 +83,3 @@ RUN cd .. && \
     evince && \
     apt-get autoremove -y && \
     apt-get clean
-   
-WORKDIR /usr/local/bin
-
