@@ -1,0 +1,86 @@
+# Start with a base image with the necessary build tools
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    gfortran \
+    libreadline-dev \
+    libx11-dev \
+    libxt-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libcairo2-dev \
+    libtiff5-dev \
+    libglib2.0-dev \
+    libdbus-1-dev \
+    libgtk2.0-dev \
+    libpango1.0-dev \
+    libxft-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libssl-dev \
+    libbz2-dev \
+    texinfo \
+    texlive \
+    texlive-fonts-recommended \
+    texlive-latex-extra \
+    texlive-fonts-extra \
+    texlive-latex-recommended \
+    curl \
+    wget \
+    ca-certificates \
+    git \
+    firefox \
+    evince \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure and build R from source, specifying the installation directory
+RUN cd R && \
+    ./configure --enable-R-shlib --with-pdfviewer=evince --with-browser=firefox && \
+    make && \
+    make install
+
+# Clean up build dependencies and source code
+
+RUN cd .. && \
+    rm -rf R-4.4.1 && \
+    apt-get purge -y \
+    build-essential \
+    gfortran \
+    libreadline-dev \
+    libx11-dev \
+    libxt-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libcairo2-dev \
+    libtiff5-dev \
+    libglib2.0-dev \
+    libdbus-1-dev \
+    libgtk2.0-dev \
+    libpango1.0-dev \
+    libxft-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libssl-dev \
+    libbz2-dev \
+    texinfo \
+    texlive \
+    texlive-fonts-recommended \
+    texlive-latex-extra \
+    texlive-fonts-extra \
+    texlive-latex-recommended \
+    curl \
+    wget \
+    git \
+    firefox \
+    evince && \
+    apt-get autoremove -y && \
+    apt-get clean
+   
+WORKDIR /usr/local/bin
+
